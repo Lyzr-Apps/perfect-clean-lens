@@ -1,116 +1,117 @@
 {
   "version": "1.0",
-  "updated_at": "2025-12-11T00:00:00Z",
+  "updated_at": "2025-12-14T10:00:00Z",
   "workflow": {
     "nodes": [
       {
-        "id": "input",
+        "id": "in",
         "type": "input",
-        "label": "Input",
+        "label": "Problem Statement",
         "nodeCategory": "input",
-        "description": "User problem statement",
-        "position": { "x": 100, "y": 300 }
+        "description": "User enters their use case problem statement",
+        "position": { "x": 100, "y": 200 }
       },
       {
-        "id": "coordinator",
-        "type": "manager",
-        "label": "Cost Estimation Coordinator",
-        "nodeCategory": "agent",
-        "description": "Routes problem to analyzer then to calculator",
-        "position": { "x": 500, "y": 300 }
-      },
-      {
-        "id": "analyzer",
+        "id": "manager",
         "type": "agent",
-        "label": "Architecture Analyzer Agent",
+        "label": "Credit Calculator Coordinator",
         "nodeCategory": "agent",
-        "description": "Analyzes problem and architectures optimal solution",
-        "position": { "x": 900, "y": 200 }
+        "description": "Coordinates architecture design and cost estimation workflow",
+        "position": { "x": 500, "y": 200 }
       },
       {
-        "id": "calculator",
+        "id": "architect",
         "type": "agent",
-        "label": "Cost Calculator Agent",
+        "label": "Architecture Designer Agent",
         "nodeCategory": "agent",
-        "description": "Calculates costs based on architecture",
-        "position": { "x": 900, "y": 400 }
+        "description": "Analyzes problem statement to determine optimal agent pattern",
+        "position": { "x": 900, "y": 100 }
       },
       {
-        "id": "end",
+        "id": "cost",
+        "type": "agent",
+        "label": "Cost Estimator Agent",
+        "nodeCategory": "agent",
+        "description": "Calculates detailed cost breakdown using Lyzr pricing",
+        "position": { "x": 900, "y": 300 }
+      },
+      {
+        "id": "out",
         "type": "end",
-        "label": "Output",
+        "label": "Credit Estimate",
         "nodeCategory": "end",
-        "description": "Final cost estimate and architecture",
-        "position": { "x": 1300, "y": 300 }
+        "description": "Final estimate with architecture and cost projection",
+        "position": { "x": 1300, "y": 200 }
       }
     ],
     "edges": [
-      { "source": "input", "target": "coordinator", "label": "Problem statement" },
-      { "source": "coordinator", "target": "analyzer", "label": "Analyze architecture" },
-      { "source": "coordinator", "target": "calculator", "label": "Calculate costs" },
-      { "source": "coordinator", "target": "end", "label": "Aggregated result" }
+      { "source": "in", "target": "manager" },
+      { "source": "manager", "target": "architect" },
+      { "source": "manager", "target": "cost" },
+      { "source": "architect", "target": "out" },
+      { "source": "cost", "target": "out" }
     ]
   },
   "agents": [
     {
-      "agent_id": "693a5648829cb256a64c4244",
-      "node_id": "coordinator",
-      "name": "Cost Estimation Coordinator",
-      "description": "Coordinates the analysis and calculation workflow",
+      "agent_id": "693eb1779188cfbc911c8c36",
+      "node_id": "manager",
+      "name": "Credit Calculator Coordinator",
+      "description": "Coordinates architecture design and cost estimation workflow, aggregates final output combining agent design with pricing breakdown",
       "agent_role": "Workflow Coordinator",
-      "agent_goal": "Orchestrate the cost estimation process",
+      "agent_goal": "Coordinate the credit calculation workflow and provide comprehensive estimates combining architecture and cost analysis",
       "agent_type": "manager",
       "provider_id": "OpenAI",
-      "model": "gpt-4o-mini",
+      "model": "gpt-4.1",
       "temperature": 0.3,
       "top_p": 1,
       "features": [],
       "has_knowledge_base": false,
       "rag_id": null,
       "rag_name": null,
-      "position": { "x": 500, "y": 300 },
-      "created_at": "2025-12-11T00:00:00Z"
+      "position": { "x": 500, "y": 200 },
+      "created_at": "2025-12-14T10:00:00Z"
     },
     {
-      "agent_id": "693a5631918f0918e0027024",
-      "node_id": "analyzer",
-      "name": "Architecture Analyzer Agent",
-      "description": "Analyzes problem statements to determine optimal agent architecture",
-      "agent_role": "Architecture Specialist",
-      "agent_goal": "Determine optimal agent architecture for given use cases",
+      "agent_id": "693eb17611f992bd361d42bd",
+      "node_id": "architect",
+      "name": "Architecture Designer Agent",
+      "description": "Analyzes problem statement to determine optimal agent pattern (single/manager-subagent/independent), identifies required components (KB, tools, RAI, memory), and estimates usage volumes",
+      "agent_role": "Solutions Architect",
+      "agent_goal": "Analyze user problem statements and design optimal Lyzr agent architectures with component specifications",
       "agent_type": "sub-agent",
       "provider_id": "OpenAI",
-      "model": "gpt-4o-mini",
+      "model": "gpt-4.1",
       "temperature": 0.4,
       "top_p": 1,
       "features": [],
       "has_knowledge_base": false,
       "rag_id": null,
       "rag_name": null,
-      "position": { "x": 900, "y": 200 },
-      "created_at": "2025-12-11T00:00:00Z"
+      "position": { "x": 900, "y": 100 },
+      "created_at": "2025-12-14T10:00:00Z"
     },
     {
-      "agent_id": "693a56318188764231c37e42",
-      "node_id": "calculator",
-      "name": "Cost Calculator Agent",
-      "description": "Applies Lyzr pricing matrix to architecture specifications",
-      "agent_role": "Financial Analyst",
-      "agent_goal": "Calculate accurate costs based on Lyzr pricing matrix",
+      "agent_id": "693eb1771a5f30753c13f5fd",
+      "node_id": "cost",
+      "name": "Cost Estimator Agent",
+      "description": "Receives architecture specification and calculates detailed cost breakdown using Lyzr pricing: creation costs, per-call costs, token costs by model selection, with monthly/yearly projections",
+      "agent_role": "Pricing Analyst",
+      "agent_goal": "Calculate accurate Lyzr credit costs based on agent architecture specifications",
       "agent_type": "sub-agent",
       "provider_id": "OpenAI",
-      "model": "gpt-4o-mini",
+      "model": "gpt-4.1",
       "temperature": 0.2,
       "top_p": 1,
       "features": [],
       "has_knowledge_base": false,
       "rag_id": null,
       "rag_name": null,
-      "position": { "x": 900, "y": 400 },
-      "created_at": "2025-12-11T00:00:00Z"
+      "position": { "x": 900, "y": 300 },
+      "created_at": "2025-12-14T10:00:00Z"
     }
   ],
   "knowledge_bases": [],
-  "build_phase": "agents_created",
-  "last_action": "Created all three agents - manager and two sub-agents"
+  "build_phase": "ui_building",
+  "last_action": "Updated with new agents created from PRD"
 }
